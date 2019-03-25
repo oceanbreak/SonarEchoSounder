@@ -114,33 +114,42 @@ class StartPage(tk.Frame):
         label_com = ttk.Label(settings_frame, text='Sonar port  ')
         label_com.grid(row=1, column=0)
 
+        label_gps = ttk.Label(settings_frame, text='GPS port    ')
+        label_gps.grid(row=2, column=0)
+
         # Choice of COM port
         var1 = tk.StringVar(self)
+        var2 = tk.StringVar(self)
         try:
             var1.set(SonarEchoSounder.available_ports[0])
+            var2.set(SonarEchoSounder.available_ports[0])
         except IndexError:
             var1.set('No ports available')
+            var2.set('No ports available')
         self.choose_box_com = ttk.Combobox(settings_frame, textvariable=var1, values=SonarEchoSounder.available_ports)
         self.choose_box_com.grid(row=1, column=1)
 
+        self.choose_box_gps = ttk.Combobox(settings_frame, textvariable=var2, values=SonarEchoSounder.available_ports)
+        self.choose_box_gps.grid(row=2, column=1)
+
         label_upper =  ttk.Label(settings_frame, text='Upper limit  ')
-        label_upper.grid(row=2, column=0)
+        label_upper.grid(row=3, column=0)
 
         label_lower = ttk.Label(settings_frame, text='Lower limit  ')
-        label_lower.grid(row=3, column=0)
+        label_lower.grid(row=4, column=0)
 
         var = tk.StringVar(self)
         var.set(str(SonarEchoSounder.upper_limit))
         self.upper_limit = tk.Spinbox(settings_frame, from_=0, to=9000, textvariable=var)
-        self.upper_limit.grid(row=2, column=1)
+        self.upper_limit.grid(row=3, column=1)
 
         var = tk.StringVar(self)
         var.set(str(SonarEchoSounder.lower_limit))
         self.lower_limit = tk.Spinbox(settings_frame, from_=0, to=9000,  textvariable=var)
-        self.lower_limit.grid(row=3, column=1)
+        self.lower_limit.grid(row=4, column=1)
 
         self.start_button = tk.Button(settings_frame, text='Start', command=self.run)
-        self.start_button.grid(row=4, sticky='W')
+        self.start_button.grid(row=5, sticky='W')
 
 
 #Initiate data buffer process
@@ -155,6 +164,8 @@ def animate(interval):
             if cur_value: data_buffer.add(float(cur_value))
             y_list = data_buffer.get()
             a.fill_between(x_list, SonarEchoSounder.lower_limit, y_list, color='#31AFD7')
+            # SonarEchoSounder.upper_limit = StartPage.label_upper.get()
+            # SonarEchoSounder.lower_limit = StartPage.label_lower.get()
             a.set_xlim([0,AXIS_LENGTH])
             a.set_ylim([SonarEchoSounder.lower_limit, SonarEchoSounder.upper_limit])
         except:

@@ -21,8 +21,8 @@ class ComPortData:
             # Read all characters before new line
             temp_char = None
             while temp_char != b'\n':
-                if self._port.inWaiting() == 0:
-                    raise serial.SerialException
+                # if self._port.inWaiting() == 0:
+                #     raise serial.SerialException
                 temp_char = self._port.read()
         except serial.SerialException:
             print('ERROR SonarCom: Cannot connect to port ' + self._port_name)
