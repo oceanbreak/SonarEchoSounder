@@ -42,8 +42,6 @@ class SonarEchoSounder(tk.Tk):
     com_settings = [None, 57600, 10, 'SDDBT']
     available_ports = serial_ports()
 
-    upper_limit = 0
-    lower_limit = 50
     is_running = False
     com_port_valid = False
 
@@ -94,10 +92,6 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        # Main window title
-        #label = ttk.Label(self, text='Echogram', font=LARGE_FONT)
-        #label.pack(pady=10, padx=10)
-
         echogram_frame = tk.Frame(self)
         echogram_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         settings_frame = tk.Frame(self)
@@ -138,16 +132,6 @@ class StartPage(tk.Frame):
         label_lower = ttk.Label(settings_frame, text='Lower limit  ')
         label_lower.grid(row=4, column=0)
 
-        var = tk.StringVar(self)
-        var.set(str(SonarEchoSounder.upper_limit))
-        self.upper_limit = tk.Spinbox(settings_frame, from_=0, to=9000, textvariable=var)
-        self.upper_limit.grid(row=3, column=1)
-
-        var = tk.StringVar(self)
-        var.set(str(SonarEchoSounder.lower_limit))
-        self.lower_limit = tk.Spinbox(settings_frame, from_=0, to=9000,  textvariable=var)
-        self.lower_limit.grid(row=4, column=1)
-
         self.start_button = tk.Button(settings_frame, text='Start', command=self.run)
         self.start_button.grid(row=5, sticky='W')
 
@@ -163,11 +147,17 @@ def animate(interval):
             cur_value = com_data.getOutputData()[1]
             if cur_value: data_buffer.add(float(cur_value))
             y_list = data_buffer.get()
-            a.fill_between(x_list, SonarEchoSounder.lower_limit, y_list, color='#31AFD7')
-            # SonarEchoSounder.upper_limit = StartPage.label_upper.get()
-            # SonarEchoSounder.lower_limit = StartPage.label_lower.get()
+
+            # Calculate limits
+            y_sum_list = [y for y in y_list if y != MINIMUM_DEPTH]
+            average_value = sum(y_sum_list) / len(y_sum_list)
+            upper_limit = min(y_sum_list) - average_value/4
+            lower_limit = max(y_sum_list) + average_value/4
+
+            # Draw plot
+            a.fill_between(x_list, lower_limit, y_list, color='#31AFD7')
             a.set_xlim([0,AXIS_LENGTH])
-            a.set_ylim([SonarEchoSounder.lower_limit, SonarEchoSounder.upper_limit])
+            a.set_ylim([lower_limit, upper_limit])
         except:
             pass
 
