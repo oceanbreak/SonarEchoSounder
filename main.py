@@ -31,6 +31,9 @@ def generateFileName(prefix = 'log'):
     return prefix + '_' + date_str + '_' + time_str
 
 
+def changeUpperLimits(value):
+    SonarEchoSounder.upper_limit = value
+
 class DataBuffer:
     def __init__(self, length):
         self._data_buffer = [MINIMUM_DEPTH for i in range(length)]
@@ -42,8 +45,6 @@ class DataBuffer:
         self._data_buffer.append(item)
         del(self._data_buffer[0])
 
-def changeUpperLimits(value):
-    SonarEchoSounder.upper_limit = value
 
 
 # Main container for program
@@ -207,7 +208,6 @@ def animate(interval):
 
             SonarEchoSounder.gps_data = cur_gps
             SonarEchoSounder.depth_data = cur_value
-            StartPage.data_label['text'] = 'Fuck you'
 
         except:
             pass

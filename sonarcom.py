@@ -75,7 +75,7 @@ class ComPortData:
     def parseGPGGA(self):
         self.pullData()
         try:
-            self._output_data = tuple(['Coordinates', self._input_data[2][:2], self._input_data[2][2:],
+            self._output_data = tuple([self._input_data[2][:2], self._input_data[2][2:],
                                  self._input_data[3],
                                  self._input_data[4][:3], self._input_data[4][3:],
                                  self._input_data[5]])
@@ -85,12 +85,12 @@ class ComPortData:
     def parseSDDBT(self):
         self.pullData()
         try:
-            self._output_data = tuple(['Echo', self._input_data[3], self._input_data[4]])
+            self._output_data = tuple([self._input_data[3], self._input_data[4]])
         except IndexError:
             self._output_data = tuple(['Echo'] + [None for i in range(2)])
 
 if __name__ == '__main__':
-    test_line1 = ComPortData('COM3', 57600, 10, 'SDDBT')
+    test_line1 = ComPortData('COM6', 4800, 10, 'GPGGA')
     for i in range(10):
         print(test_line1.getOutputData())
 
